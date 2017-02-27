@@ -1,0 +1,293 @@
+#include <stdio.h>
+#include "connect4_engine.h"
+
+int place_token(int player, int column, int num_rows,
+	int num_columns, int board[num_rows][num_columns]) {
+
+	int row = -1;
+	int isEmpty = readColumn(column, num_rows, num_columns, board);
+
+	if (isEmpty < 0) {
+		return -1;
+	}
+	
+	else {
+		row = readColumn(column, num_rows, num_columns, board);
+		board[row][column-1] = player;
+		return player;
+	}
+}
+
+int winner(int num_rows, int num_columns, int length_to_win,
+	int array[num_rows][num_columns]) {
+
+	int winningPlayer = -1;
+
+	winningPlayer = verticalWin(num_rows, num_columns,
+				length_to_win, array);
+	if (winningPlayer > -1) {
+		return winningPlayer;
+	}
+	
+	winningPlayer = horizontalWin(num_rows, num_columns,
+                                length_to_win, array);
+	if (winningPlayer > -1) {
+                return winningPlayer;
+        }
+	
+	winningPlayer = diag_leftWin(num_rows, num_columns,
+                                length_to_win, array);
+	if (winningPlayer > -1) {
+                return winningPlayer;
+        }
+	
+	winningPlayer = diag_rightWin(num_rows, num_columns,
+                                length_to_win, array);
+	
+	return winningPlayer;
+}
+
+int verticalWin(int num_rows, int num_columns, int length_to_win,
+	int array[num_rows][num_columns]) {
+
+	int row_index = num_rows -1;
+	int col_index = num_columns -1;
+	int trackedPlayer = 0;
+	int winCounter = 0;
+	
+	for (col_index; col_index > -1; --col_index) {
+		for (row_index; row_index > -1; --row_index) {
+			int contains = array[row_index][col_index];
+			printf("%d",contains);
+			printf("%d\n",winCounter);
+		       	if((contains != trackedPlayer) && contains != -1) {
+				trackedPlayer = contains;
+				winCounter = 0;
+			}
+
+			if(winCounter > 0 && contains == trackedPlayer && contains != -1) {
+				winCounter++;
+			}
+
+			if(winCounter == 0 && contains != -1 ) {
+				trackedPlayer = contains;
+				winCounter++;
+			}
+
+			if(winCounter == length_to_win) {
+				return trackedPlayer;
+			}
+		}
+		winCounter = 0;
+		row_index = num_rows -1;
+	}
+
+	return -1;
+}
+
+int horizontalWin(int num_rows, int num_columns, int length_to_win,
+        int array[num_rows][num_columns]) {
+
+        int row_index = num_rows -1;
+        int col_index = num_columns -1;
+        int trackedPlayer = 0;
+        int winCounter = 0;
+
+        for (row_index; row_index > -1; --col_index) {
+                for (col_index; col_index > -1; --row_index) {
+                        int contains = array[row_index][col_index];
+			printf("%d",contains);
+			printf("%d\n",winCounter);
+                        if((contains != trackedPlayer) && contains != -1) {
+                                trackedPlayer = contains;
+                                winCounter = 0;
+                        }
+
+                        if(winCounter > 0 && contains == trackedPlayer && contains != -1) {
+                                winCounter++;
+                        }
+
+                        if(winCounter == 0 && contains != -1 ) {
+                                trackedPlayer = contains;
+                                winCounter++;
+                        }
+
+                        if(winCounter == length_to_win) {
+                                return trackedPlayer;
+                        }
+                }
+                winCounter = 0;
+                col_index = num_columns -1;
+        }
+
+        return -1;
+}
+
+int diag_leftWin (int num_rows, int num_columns, int length_to_win,
+	int array[num_rows][num_columns]) {
+		
+	int row_index = num_rows -1;
+    int col_index = 0;
+    int trackedPlayer = 0;
+    int winCounter = 0;
+
+	for(col_index;col_index < num_columns; col_index++) {
+		for (int x=0; row_index > -1 && col_index > -1; --row_index, --col_index) {
+			int contains = array[row_index][col_index];
+			
+			if((contains != trackedPlayer) && contains != -1) {
+                                trackedPlayer = contains;
+                                winCounter = 0;
+                        }
+
+                        if(winCounter > 0 && contains == trackedPlayer && contains != -1) {
+                                winCounter++;
+                        }
+
+                        if(winCounter == 0 && contains != -1 ) {
+                                trackedPlayer = contains;
+                                winCounter++;
+                        }
+
+                        if(winCounter == length_to_win) {
+                                return trackedPlayer;
+                        }
+
+		}
+	}
+
+		row_index = 0;
+        col_index = num_columns -1;
+        trackedPlayer = 0;
+        winCounter = 0;
+
+        for(row_index;row_index > -1; --row_index) {
+                for (int y=0; row_index > -1 && col_index > -1; --row_index, --col_index) {
+                        int contains = array[row_index][col_index];
+
+                        if((contains != trackedPlayer) && contains != -1) {
+                                trackedPlayer = contains;
+                                winCounter = 0;
+                        }
+
+                        if(winCounter > 0 && contains == trackedPlayer && contains != -1) {
+                                winCounter++;
+                        }
+
+                        if(winCounter == 0 && contains != -1 ) {
+                                trackedPlayer = contains;
+                                winCounter++;
+                        }
+
+                        if(winCounter == length_to_win) {
+                                return trackedPlayer;
+                        }
+
+                }
+        }
+	return -1;
+}
+
+int diag_rightWin (int num_rows, int num_columns, int length_to_win,
+        int array[num_rows][num_columns]) {
+
+	int row_index = num_rows -1;
+        int col_index = num_columns -1;
+        int trackedPlayer = 0;
+        int winCounter = 0;
+
+        for(col_index;col_index > -1; --col_index) {
+                for (int x=0; row_index > -1 && col_index < num_columns; --row_index, col_index++) {
+                        int contains = array[row_index][col_index];
+
+                        if((contains != trackedPlayer) && contains != -1) {
+                                trackedPlayer = contains;
+                                winCounter = 0;
+                        }
+
+                        if(winCounter > 0 && contains == trackedPlayer && contains != -1) {
+                                winCounter++;
+                        }
+
+                        if(winCounter == 0 && contains != -1 ) {
+                                trackedPlayer = contains;
+                                winCounter++;
+                        }
+
+                        if(winCounter == length_to_win) {
+                                return trackedPlayer;
+                        }
+
+                }
+        }
+
+        row_index = 0;
+        col_index = num_columns -1;
+        trackedPlayer = 0;
+        winCounter = 0;
+
+        for(row_index;row_index > -1; --row_index) {
+                for (int y=0; row_index > -1 && col_index < num_columns; --row_index, col_index++) {
+                        int contains = array[row_index][col_index];
+
+                        if((contains != trackedPlayer) && contains != -1) {
+                                trackedPlayer = contains;
+                                winCounter = 0;
+                        }
+
+                        if(winCounter > 0 && contains == trackedPlayer && contains != -1) {
+                                winCounter++;
+                        }
+
+                        if(winCounter == 0 && contains != -1 ) {
+                                trackedPlayer = contains;
+                                winCounter++;
+                        }
+
+                        if(winCounter == length_to_win) {
+                                return trackedPlayer;
+                        }
+
+                }
+        }
+        return -1;
+}
+
+int readColumn(int column, int num_rows, int num_columns,
+	 int board[num_rows][num_columns]) {
+	
+	int row_index = num_rows -1;
+	int col_placedIndex = column -1;
+
+	for (row_index; row_index > -1; --row_index) {
+		if (board[row_index][col_placedIndex] == -1) {
+			return row_index;
+		}
+	}
+
+	return -1;
+}
+
+void printBoard(int num_rows, int num_columns, int board[num_rows][num_columns]) {
+	
+	int player = 0;
+
+	for (int x= 1; x < num_columns+1 ; x++) {
+		printf("*%d*", x);
+	}
+
+	printf("\n");
+
+	for (int row_index = 0; row_index < num_rows; row_index++) {
+		for (int col_index = 0; col_index < num_columns; col_index++) {
+			if (board[row_index][col_index] == -1) {
+				printf("[ ]");
+			}
+			else {
+				player = board[row_index][col_index];
+				printf("[%d]",player);
+			}
+		}
+		printf("\n");
+	}	
+}
